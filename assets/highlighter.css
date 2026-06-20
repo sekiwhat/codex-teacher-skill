@@ -1,0 +1,54 @@
+.user-highlight {
+  padding: 0 .04em;
+  border-radius: 2px;
+  color: inherit;
+  cursor: pointer;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.highlight-toolbar {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: calc(100vw - 16px);
+  padding: 8px 10px;
+  border: 1px solid #bcc9cf;
+  border-radius: 9px;
+  background: #fffdf8;
+  box-shadow: 0 8px 28px rgba(23, 32, 51, .22);
+  font-size: .84rem;
+}
+.highlight-toolbar[hidden] { display: none; }
+.highlight-toolbar input[type="color"] {
+  width: 31px;
+  height: 31px;
+  padding: 2px;
+  border: 1px solid #aebbc2;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+.highlight-toolbar button {
+  min-height: 31px;
+  padding: 4px 9px;
+  border: 1px solid #aebbc2;
+  border-radius: 6px;
+  color: #213b48;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+.highlight-toolbar button:hover { background: #e8f5f8; }
+.highlight-toolbar button:disabled { opacity: .42; cursor: not-allowed; }
+.highlight-status { color: #52646d; white-space: nowrap; }
+.highlight-status.is-error { color: #a43b3b; }
+
+@media (max-width: 700px) {
+  .highlight-status { display: none; }
+}
+
+@media print {
+  .highlight-toolbar { display: none !important; }
+}
