@@ -1,25 +1,23 @@
-# 🎓 Teacher Skill for Codex CLI
+# Teacher Skill for Codex CLI
 
-A skill for [Codex CLI](https://github.com/openai/codex) that transforms Markdown documents into beautifully designed, self-contained HTML teaching files — explained as if teaching a 5-year-old, but without sacrificing accuracy.
+A skill for Codex that transforms Markdown documents into beautifully designed, self-contained HTML teaching files, explained simply without sacrificing accuracy.
 
 ## What It Does
 
 Feed it any Markdown file, and it will:
 
-1. **Read the entire document** and identify every knowledge point, definition, formula, theorem, example, and proof
-2. **Explain each concept** using simple language, real-life analogies, and step-by-step reasoning
-3. **Generate a standalone HTML file** with KaTeX math rendering, responsive design, and a clean visual style
-
-The output HTML is fully self-contained — no external dependencies needed (except KaTeX CDN for math).
+1. Read the entire document and identify every knowledge point, definition, formula, theorem, example, proof, and code fragment.
+2. Explain each concept using simple language, real-life analogies, and step-by-step reasoning.
+3. Generate a standalone HTML file with KaTeX math rendering, responsive design, and a built-in persistent text highlighter.
 
 ## Features
 
-- **Bilingual support**: English, Chinese, or side-by-side bilingual mode
-- **Complete coverage**: Never skips any content — every formula, every proof, every example
-- **Beautiful HTML output**: Card-based layout with color-coded categories (definitions, examples, proofs, warnings)
-- **KaTeX math**: Full LaTeX math rendering with `$...$` and `$$...$$` syntax
-- **Text highlighter**: Built-in highlight tool with custom colors, persistent via localStorage
-- **Responsive & print-friendly**: Works on mobile and prints cleanly
+- Bilingual support: English, Chinese, or tightly paired bilingual mode.
+- Complete coverage: every formula, proof, example, code fragment, and important conclusion must be covered.
+- Beautiful HTML output driven by `HTML_FORMAT.md`.
+- KaTeX math rendering with explicit validation rules.
+- Text highlighter with custom colors and `localStorage` persistence.
+- Responsive and print-friendly output.
 
 ## Installation
 
@@ -38,52 +36,47 @@ cp -r teacher/ ~/.codex/skills/teacher
 
 In Codex CLI:
 
-```
+```text
 /teacher path/to/your/document.md
 ```
 
 Or simply say:
 
-> "教我这个文档" / "Explain this document to me"
+```text
+教我这个文档
+Explain this document to me
+```
 
-The skill will ask you to choose a language mode (English / Chinese / Bilingual), then generate a `teaching_*.html` file in the same directory as the source Markdown.
+The skill asks for a language mode unless the current request already specifies English, Chinese, or bilingual output. By default it writes `teaching_[source-name].html` to the current Codex working directory, unless the user specifies another output path.
 
 ## File Structure
 
-```
+```text
 teacher/
-├── SKILL.md                  # Skill definition and instructions
-├── HTML_FORMAT.md            # HTML template and design system
-├── README.md                 # This file
+├── SKILL.md
+├── HTML_FORMAT.md
+├── references/
+│   ├── workflow.md
+│   ├── pedagogy.md
+│   ├── language-modes.md
+│   ├── html-output.md
+│   ├── validation.md
+│   └── edge-cases.md
+├── README.md
 └── assets/
-    ├── highlighter.css       # Highlight tool styles
-    ├── highlighter.js        # Highlight tool logic
-    └── highlighter-toolbar.html  # Highlight toolbar HTML
+    ├── highlighter.css
+    ├── highlighter.js
+    └── highlighter-toolbar.html
 ```
 
 ## How It Works
 
-The skill follows a structured workflow:
-
-```
-Confirm language → Read document → List knowledge points → [User confirms]
-→ Explain each point → Build outline → [User confirms] → Generate HTML → Validate
+```text
+Confirm language -> Read required references -> Read document -> List knowledge points -> User confirms
+-> Build teaching content -> Show outline -> User confirms -> Read HTML format/assets -> Generate HTML -> Validate
 ```
 
-Three checkpoints ensure the user stays in control:
-- **Checkpoint 0**: Confirm output language
-- **Checkpoint 1**: Review knowledge point list
-- **Checkpoint 2**: Review HTML outline before generation
-
-## Example
-
-Given a Markdown file about probability theory, the generated HTML includes:
-
-- A knowledge map overview
-- Color-coded cards for definitions, examples, proofs, and warnings
-- Fully rendered LaTeX formulas
-- Step-by-step problem solving with explanations
-- A summary section with core takeaways
+The `SKILL.md` file is intentionally small. Detailed rules live in `references/` so language behavior, teaching behavior, HTML output, validation, and edge cases can evolve independently.
 
 ## License
 
