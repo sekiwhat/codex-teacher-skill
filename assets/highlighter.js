@@ -6,16 +6,22 @@ function initTeacherHighlighter() {
   const removeButton = document.getElementById('highlight-remove');
   const clearButton = document.getElementById('highlight-clear');
   const status = document.getElementById('highlight-status');
+  const locator = document.getElementById('highlight-locator');
+  const prevButton = document.getElementById('highlight-prev');
+  const nextButton = document.getElementById('highlight-next');
+  const countLabel = document.getElementById('highlight-count');
   if (!root || !toolbar || !colorInput || !applyButton || !removeButton || !clearButton || !status) return;
+  const hasLocator = Boolean(locator && prevButton && nextButton && countLabel);
 
   const storageKey = `teacher-highlights:${location.pathname || document.title}`;
   const excludedSelector = [
     'script', 'style', 'button', 'input', 'nav', '.toc', '.math-block',
-    '.katex', '.highlight-toolbar', '[data-no-highlight]'
+    '.katex', '.highlight-toolbar', '.highlight-locator', '[data-no-highlight]'
   ].join(',');
   let highlights = loadHighlights();
   let pendingSelection = null;
   let activeId = null;
+  let locatedIndex = -1;
 
   function loadHighlights() {
     try {
@@ -157,6 +163,55 @@ function initTeacherHighlighter() {
     root.normalize();
   }
 
+  function highlightTargets() {
+    return highlights
+      .map(record => ({
+        id: record.id,
+        mark: root.querySelector(`[data-highlight-id="${CSS.escape(record.id)}"]`)
+      }))
+      .filter(item => item.mark);
+  }
+
+  function clearLocatedHighlight() {
+    root.querySelectorAll('.user-highlight.is-located')
+      .forEach(mark => { mark.classList.remove('is-located'); });
+  }
+
+  function updateLocator() {
+    if (!hasLocator) return;
+    const total = highlightTargets().length;
+    if (locatedIndex >= total) locatedIndex = total - 1;
+    if (total === 0) locatedIndex = -1;
+    countLabel.textContent = `${total} ${total === 1 ? 'highlight' : 'highlights'}`;
+    prevButton.disabled = total === 0;
+    nextButton.disabled = total === 0;
+    locator.dataset.hasHighlights = String(total > 0);
+  }
+
+  function locateHighlight(direction) {
+    if (!hasLocator) return;
+    const targets = highlightTargets();
+    if (!targets.length) {
+      clearLocatedHighlight();
+      updateLocator();
+      return;
+    }
+    locatedIndex = locatedIndex < 0
+      ? (direction < 0 ? targets.length - 1 : 0)
+      : (locatedIndex + direction + targets.length) % targets.length;
+    const target = targets[locatedIndex];
+    clearLocatedHighlight();
+    root.querySelectorAll(`[data-highlight-id="${CSS.escape(target.id)}"]`)
+      .forEach(mark => { mark.classList.add('is-located'); });
+    target.mark.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+    setStatus(`高亮 ${locatedIndex + 1}/${targets.length} · Highlight ${locatedIndex + 1}/${targets.length}`);
+    window.setTimeout(() => {
+      root.querySelectorAll(`[data-highlight-id="${CSS.escape(target.id)}"]`)
+        .forEach(mark => { mark.classList.remove('is-located'); });
+    }, 1800);
+    updateLocator();
+  }
+
   function positionToolbar(rect) {
     toolbar.hidden = false;
     const width = toolbar.offsetWidth;
@@ -205,6 +260,7 @@ function initTeacherHighlighter() {
     const mark = event.target.closest?.('.user-highlight');
     if (mark) {
       activeId = mark.dataset.highlightId;
+      locatedIndex = highlights.findIndex(item => item.id === activeId);
       pendingSelection = null;
       const record = highlights.find(item => item.id === activeId);
       colorInput.value = record?.color || '#fff176';
@@ -231,6 +287,7 @@ function initTeacherHighlighter() {
       root.querySelectorAll(`[data-highlight-id="${CSS.escape(activeId)}"]`)
         .forEach(mark => { mark.style.backgroundColor = color; });
       saveHighlights();
+      updateLocator();
       hideToolbar();
       return;
     }
@@ -252,6 +309,7 @@ function initTeacherHighlighter() {
     highlights.sort((a, b) => a.start - b.start);
     applyHighlight(record);
     saveHighlights();
+    updateLocator();
     window.getSelection()?.removeAllRanges();
     hideToolbar();
   });
@@ -261,6 +319,7 @@ function initTeacherHighlighter() {
     unwrapHighlight(activeId);
     highlights = highlights.filter(item => item.id !== activeId);
     saveHighlights();
+    updateLocator();
     hideToolbar();
   });
 
@@ -270,8 +329,14 @@ function initTeacherHighlighter() {
     [...new Set(highlights.map(item => item.id))].forEach(unwrapHighlight);
     highlights = [];
     saveHighlights();
+    updateLocator();
     hideToolbar();
   });
+
+  if (hasLocator) {
+    prevButton.addEventListener('click', () => { locateHighlight(-1); });
+    nextButton.addEventListener('click', () => { locateHighlight(1); });
+  }
 
   document.addEventListener('mousedown', event => {
     if (
@@ -284,6 +349,7 @@ function initTeacherHighlighter() {
   });
 
   restoreHighlights();
+  updateLocator();
 }
 
 if (document.readyState === 'loading') {

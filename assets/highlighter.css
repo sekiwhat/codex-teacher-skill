@@ -45,6 +45,48 @@
 .highlight-status { color: #52646d; white-space: nowrap; }
 .highlight-status.is-error { color: #a43b3b; }
 
+
+.user-highlight.is-located {
+  outline: 2px solid #183f4e;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 178, 74, .45);
+}
+.highlight-locator {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100vw - 28px);
+  padding: 7px 9px;
+  border: 1px solid #bcc9cf;
+  border-radius: 9px;
+  background: #fffdf8;
+  box-shadow: 0 8px 28px rgba(23, 32, 51, .18);
+  font-size: .84rem;
+}
+.highlight-locator button {
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid #aebbc2;
+  border-radius: 6px;
+  color: #213b48;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+.highlight-locator button:hover { background: #e8f5f8; }
+.highlight-locator button:disabled { opacity: .42; cursor: not-allowed; }
+.highlight-count {
+  min-width: 86px;
+  color: #213b48;
+  font-weight: 750;
+  text-align: center;
+  white-space: nowrap;
+}
+
 @media (max-width: 700px) {
   .highlight-status { display: none; }
 }
@@ -52,3 +94,17 @@
 @media print {
   .highlight-toolbar { display: none !important; }
 }
+
+@media (max-width: 700px) {
+  .highlight-locator {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    justify-content: center;
+  }
+}
+
+@media print {
+  .highlight-locator { display: none !important; }
+}
+

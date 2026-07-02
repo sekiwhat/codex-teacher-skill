@@ -362,6 +362,7 @@ delimiters: [
 - 使用 `<input type="color">` 自定义任意高亮颜色。
 - 点击已有高亮后可以修改颜色或删除。
 - 提供“全部清除”按钮，并在清除前确认。
+- 提供常驻高亮定位条，显示高亮数量，并支持跳转到上一个/下一个高亮；跳转时滚动到对应高亮并短暂突出显示当前位置。
 - 使用 `localStorage` 自动保存；存储键必须包含 `location.pathname`，让不同 HTML 文件互不影响。
 - 页面重新打开后自动恢复高亮。
 - 禁止高亮目录、按钮、脚本、样式、KaTeX 渲染结果和 `.math-block`，避免破坏公式结构。
@@ -387,9 +388,11 @@ delimiters: [
 ### 高亮验收
 
 - `#highlight-toolbar`、`#highlight-color`、`#highlight-apply`、`#highlight-remove`、`#highlight-clear` 均只出现一次。
-- 页面含 `.user-highlight` 与 `.highlight-toolbar` 样式。
+- `#highlight-locator`、`#highlight-prev`、`#highlight-next`、`#highlight-count` 均只出现一次。
+- 页面含 `.user-highlight`、`.highlight-toolbar`、`.highlight-locator` 与 `.user-highlight.is-located` 样式。
 - 脚本含基于 `location.pathname` 的存储键和 `localStorage` 读写。
-- 打印时隐藏工具栏，但保留高亮背景。
+- 脚本含高亮定位逻辑：更新计数、上一个/下一个循环跳转、`scrollIntoView`、短暂添加并移除 `is-located` 类。
+- 打印时隐藏工具栏和定位条，但保留高亮背景。
 - 脚本通过 JavaScript 语法检查。
 
 ## 9. 交付前格式验收
