@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "prompt": "教我这个文档：/path/to/operating-systems/lecture02.md",
+    "expected": "生成一个教学HTML，包含文件描述符、管道、fork、exec等概念的讲解，有具体例子和类比"
+  },
+  {
+    "id": 2,
+    "prompt": "用中英文对照模式讲解这个概率论笔记：/path/to/probability/chapter3.md",
+    "expected": "生成中英文对照HTML，每个概念都有英文和中文紧邻配对，公式用KaTeX渲染"
+  },
+  {
+    "id": 3,
+    "prompt": "帮我把这份算法笔记变成教学材料，要像教5岁小孩一样简单易懂",
+    "expected": "生成HTML，用生活类比解释算法概念，每个抽象概念都有具体例子，语言亲切"
+  }
+]

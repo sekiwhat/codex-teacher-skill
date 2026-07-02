@@ -1,6 +1,6 @@
-# Teacher Skill for Codex CLI
+# Teacher Skill
 
-A skill for Codex that transforms Markdown documents into beautifully designed, self-contained HTML teaching files, explained simply without sacrificing accuracy.
+Transforms Markdown documents into beautifully designed, self-contained HTML teaching files, explained simply without sacrificing accuracy.
 
 ## What It Does
 
@@ -21,20 +21,33 @@ Feed it any Markdown file, and it will:
 
 ## Installation
 
+### Auto-detect (recommended)
+
+If your agent runtime supports `skills.sh` or similar auto-detection, simply clone the repository:
+
 ```bash
-# Clone into your Codex skills directory
-git clone https://github.com/YOUR_USERNAME/codex-teacher-skill.git ~/.codex/skills/teacher
+git clone https://github.com/sekiwhat/codex-teacher-skill.git ~/.codex/skills/teacher
 ```
 
-Or copy the files manually:
+### Manual installation
+
+Copy the `teacher/` folder to your agent's skills directory:
+
+| Runtime | Skills Directory |
+|---------|------------------|
+| Codex CLI | `~/.codex/skills/` |
+| Claude Code | `~/.claude/skills/` |
+| Cursor | `~/.cursor/skills/` |
+| OpenClaw | `~/.openclaw/skills/` |
 
 ```bash
-cp -r teacher/ ~/.codex/skills/teacher
+# Example: copy to Claude Code skills directory
+cp -r teacher/ ~/.claude/skills/teacher
 ```
 
 ## Usage
 
-In Codex CLI:
+In any skills-compatible agent runtime:
 
 ```text
 /teacher path/to/your/document.md
@@ -47,7 +60,7 @@ Or simply say:
 Explain this document to me
 ```
 
-The skill asks for a language mode unless the current request already specifies English, Chinese, or bilingual output. By default it writes `teaching_[source-name].html` to the current Codex working directory, unless the user specifies another output path.
+The skill asks for a language mode unless the current request already specifies English, Chinese, or bilingual output. By default it writes `teaching_[source-name].html` to the current working directory, unless the user specifies another output path.
 
 ## File Structure
 
