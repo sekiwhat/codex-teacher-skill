@@ -21,27 +21,19 @@ Feed it any Markdown file, and it will:
 
 ## Installation
 
-### Auto-detect (recommended)
-
-If your agent runtime supports `skills.sh` or similar auto-detection, simply clone the repository:
+Clone the repository into your agent's skills directory:
 
 ```bash
+# Codex CLI
 git clone https://github.com/sekiwhat/codex-teacher-skill.git ~/.codex/skills/teacher
+
+# Claude Code
+git clone https://github.com/sekiwhat/codex-teacher-skill.git ~/.claude/skills/teacher
 ```
 
-### Manual installation
-
-Copy the `teacher/` folder to your agent's skills directory:
-
-| Runtime | Skills Directory |
-|---------|------------------|
-| Codex CLI | `~/.codex/skills/` |
-| Claude Code | `~/.claude/skills/` |
-| Cursor | `~/.cursor/skills/` |
-| OpenClaw | `~/.openclaw/skills/` |
+Or copy the files manually:
 
 ```bash
-# Example: copy to Claude Code skills directory
 cp -r teacher/ ~/.claude/skills/teacher
 ```
 
