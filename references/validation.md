@@ -44,6 +44,10 @@ write(fd, "world
 
 - 只有一个 `<!DOCTYPE html>`。
 - 只有一个 `<html` 开始标签和一个 `</html>` 结束标签。
+- 页面含 `.layout`、`.sidebar`、`.sidebar-nav`、`#toc-toggle`。
+- 目录链接数量与 `<section id="...">` 数量一致。
+- 侧栏目录含当前章节 `.active` 高亮逻辑和移动端展开/收起逻辑。
+- 侧栏目录可滚动但隐藏滚动条：含 `scrollbar-width: none` 与 `.sidebar::-webkit-scrollbar { width: 0; height: 0; }`。
 - KaTeX CSS、KaTeX JS、auto-render JS 和初始化脚本存在。
 - 四类公式定界符都在初始化脚本中。
 - `.math-block` 内没有单美元展示公式。

@@ -60,7 +60,10 @@
 
 ### 布局
 
-- 正文区最大宽度约 `900px`，居中显示
+- 桌面端使用左侧 sticky 目录栏 + 右侧正文阅读区；正文最大宽度约 `980px`
+- 左侧目录与正文之间保留充足留白，默认正文左侧外边距约 `64px`
+- 左侧目录自身可滚动但隐藏滚动条，避免目录栏右侧出现突兀滑块
+- 平板和移动端目录收起为顶部按钮，点击后展开目录
 - 封面全宽，深色背景，底部为三色渐变强调线
 - 每个大主题使用 `<section id=”...”>` 分隔
 - 正文纸张有细微圆角（约 12px）和阴影，在浅色背景上形成卡片感
@@ -116,15 +119,25 @@
     </div>
   </header>
 
-  <main>
-    <nav aria-label=”Table of contents”>
-      <!-- 每个目录项中英文同行 -->
+  <button class=”toc-toggle” id=”toc-toggle” type=”button” aria-expanded=”false” aria-controls=”sidebar”>
+    <span class=”arrow”>▾</span>
+    Table of Contents 目录
+  </button>
+
+  <div class=”layout”>
+    <nav class=”sidebar” id=”sidebar” aria-label=”Table of contents”>
+      <div class=”sidebar-label”>Contents 目录</div>
+      <ul class=”sidebar-nav”>
+        <!-- 每个目录项使用编号 + 中英文同行标题 -->
+      </ul>
     </nav>
 
-    <section id=”...”>
-      <!-- 教学内容 -->
-    </section>
-  </main>
+    <main>
+      <section id=”...”>
+        <!-- 教学内容 -->
+      </section>
+    </main>
+  </div>
 
   <footer>[Course · Lesson range · Teaching Notes]</footer>
 </body>
@@ -135,7 +148,7 @@
 
 - 必须有独立 `<header>` 封面、`<main>` 正文和 `<footer>`。
 - 封面标题使用 `Fraunces` 字号，展示字体风格。
-- 目录紧接封面后的正文顶部。
+- 目录使用左侧 sticky 侧栏；移动端收起为 `Table of Contents 目录` 按钮。
 - 每个大主题使用一个 `<section id=”...”>`。
 - 不再使用”所有内容包在 `.container` 中并以大卡片堆叠”的旧版结构。
 
@@ -265,38 +278,106 @@ header p[lang="zh-CN"] {
   color: rgba(255,255,255,.65);
 }
 
+/* ===== Layout: sidebar + content ===== */
+.layout {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  padding: 0 8px;
+}
+
+/* ===== Sidebar table of contents ===== */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 190px;
+  flex-shrink: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 28px 0;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { width: 0; height: 0; }
+.sidebar-label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+  padding-right: 8px;
+}
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar-nav li { margin: 0; }
+.sidebar-nav a {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 8px 4px 0;
+  font-size: .82rem;
+  line-height: 1.35;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color .15s, background .15s;
+}
+.sidebar-nav a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.sidebar-nav a .num {
+  flex-shrink: 0;
+  min-width: 1.6em;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+.sidebar-nav a:hover .num { color: var(--accent); }
+.sidebar-nav a.active {
+  color: #9A3E1F;
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.sidebar-nav a.active .num { color: var(--accent); }
+
+/* ===== Mobile TOC toggle ===== */
+.toc-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 18px;
+  border: 0;
+  border-bottom: 1px solid var(--line-light);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.toc-toggle:hover { color: var(--ink); }
+.toc-toggle .arrow { transition: transform .25s; }
+.toc-toggle[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+
 /* ===== Main content area ===== */
 main {
-  max-width: 900px;
-  margin: 28px auto;
+  flex: 1;
+  min-width: 0;
+  max-width: 980px;
+  margin: 28px auto 28px 64px;
   background: var(--surface);
   padding: 32px clamp(20px, 4vw, 48px) 60px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-}
-
-/* ===== Table of contents ===== */
-nav {
-  border-bottom: 1px solid var(--line-light);
-  padding-bottom: 24px;
-  margin-bottom: 28px;
-  columns: 2;
-  column-gap: 32px;
-}
-nav a {
-  display: block;
-  color: var(--accent);
-  text-decoration: none;
-  padding: 4px 0;
-  break-inside: avoid;
-  font-size: .92rem;
-}
-nav a:hover { color: var(--accent-dark, #9A3E1F); text-decoration: underline; }
-nav a span { display: inline; }
-nav a .nav-zh {
-  color: var(--ink-muted);
-  margin-left: .25em;
-  font-size: .9em;
 }
 
 /* ===== Section layout ===== */
@@ -499,15 +580,36 @@ footer {
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 700px) {
-  header { padding: 38px 18px 42px; }
+@media (min-width: 1024px) {
+  .sidebar { display: block !important; }
+}
+@media (max-width: 1023px) {
+  .layout {
+    flex-direction: column;
+    padding: 0;
+  }
+  .sidebar {
+    position: static;
+    width: 100%;
+    max-height: none;
+    display: none;
+    padding: 16px 18px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line-light);
+  }
+  .sidebar.open { display: block; }
+  .toc-toggle { display: flex; }
   main {
+    width: 100%;
+    max-width: none;
     margin: 0;
     border-radius: 0;
     box-shadow: none;
     padding: 20px 18px 40px;
   }
-  nav { columns: 1; }
+}
+@media (max-width: 700px) {
+  header { padding: 38px 18px 42px; }
   .grid { grid-template-columns: 1fr; }
   .katex-display { font-size: .93em; }
 }
@@ -515,6 +617,7 @@ footer {
 /* ===== Print ===== */
 @media print {
   body { background: white; }
+  .sidebar, .toc-toggle { display: none !important; }
   header {
     background: white !important;
     color: black !important;
@@ -530,7 +633,6 @@ footer {
     border-radius: 0;
     padding: 20px 0;
   }
-  nav { display: none; }
   section { break-inside: avoid-page; }
   .box { break-inside: avoid; }
 }
@@ -572,17 +674,85 @@ footer {
 ### 目录
 
 ```html
-<a href="#conditional">
-  <span>1. Conditional probability</span>
-  <span class="nav-zh">1. 条件概率</span>
-</a>
+<button class="toc-toggle" id="toc-toggle" type="button" aria-expanded="false" aria-controls="sidebar">
+  <span class="arrow">▾</span>
+  Table of Contents 目录
+</button>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Table of contents">
+    <div class="sidebar-label">Contents 目录</div>
+    <ul class="sidebar-nav">
+      <li>
+        <a href="#conditional">
+          <span class="num">1</span>
+          <span>Conditional Probability 条件概率</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- section content -->
+  </main>
+</div>
 ```
 
-为 `.nav-zh` 设置中文颜色与小间距：
+每个目录项使用 `.num` 编号和一个中英文同行标题；不要再生成正文顶部双栏目录。
 
-```css
-nav a span { display: inline; }
-nav a .nav-zh { color: #4f6670; margin-left: .25em; }
+目录必须包含当前章节高亮与移动端展开脚本：
+
+```html
+<script>
+(function() {
+  const sections = Array.from(document.querySelectorAll('section[id]'));
+  const navLinks = Array.from(document.querySelectorAll('.sidebar-nav a'));
+  const sidebar = document.getElementById('sidebar');
+  const tocToggle = document.getElementById('toc-toggle');
+
+  function setActive(id) {
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      link.classList.toggle('active', href === `#${id}`);
+    });
+  }
+
+  if (sections.length && navLinks.length) {
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) setActive(visible[0].target.id);
+    }, {
+      rootMargin: '-12% 0px -72% 0px',
+      threshold: 0
+    });
+
+    sections.forEach(section => {
+      section.style.scrollMarginTop = '16px';
+      observer.observe(section);
+    });
+    setActive(sections[0].id);
+  }
+
+  if (tocToggle && sidebar) {
+    tocToggle.addEventListener('click', function() {
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      sidebar.classList.toggle('open', !expanded);
+    });
+
+    sidebar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth < 1024) {
+          tocToggle.setAttribute('aria-expanded', 'false');
+          sidebar.classList.remove('open');
+        }
+      });
+    });
+  }
+})();
+</script>
 ```
 
 ### 列表与表格
@@ -660,7 +830,7 @@ delimiters: [
 使用方式：
 
 1. 将 `assets/highlighter.css` 的完整内容内联到页面主 `<style>` 末尾，不得写成外部文件链接。
-2. 将 `assets/highlighter-toolbar.html` 放在正文容器结束后、`<footer>` 前。
+2. 将 `assets/highlighter-toolbar.html` 放在 `.layout` 结束后、`<footer>` 前。
 3. 将 `assets/highlighter.js` 的完整内容放入 `<script>...</script>`，置于 `</body>` 前。
 4. 最终 HTML 必须仍是单文件，不依赖 teacher skill 目录中的运行时资源。
 5. 不得随意改写高亮算法；若页面正文容器不是 `<main>` 或 `.container`，才允许调整脚本的根节点选择器。
@@ -680,17 +850,19 @@ delimiters: [
 除 `SKILL.md` 要求的内容与公式验收外，还必须确认：
 
 1. 封面 `<header>` 使用深海军蓝渐变背景 `#1A2B3C → #0F1E2B`，底部有三色渐变强调线。
-2. 正文 `<main>` 使用暖白背景 `#FEFCF8`，有细微圆角和阴影。
-3. 桌面目录为双栏，宽度小于 700px 时变为单栏。
-4. 每个大主题使用 `<section id=”...”>`，目录锚点能对应。
-5. 中英文长句使用 `.pair` 紧邻配对，短标题使用 `.zh-inline`。
-6. 定义、定理、例子、警告使用 `.box` + `.box-head` + `.box-body` 结构，证明使用 `.proof`。
-7. 页面只有一个 `DOCTYPE`、一个 `<html>` 根节点。
-8. HTML5 语义标签完整闭合。
-9. 打印样式隐藏目录并去除正文阴影和背景色。
-10. 支持 `prefers-reduced-motion`，关闭平滑滚动和动画。
-11. 高亮器三份标准资产已完整内联，并通过”高亮验收”。
-12. 源码 `<pre><code>` 通过转义验收：字符串字面量中的 `\n`、`\t`、`\\` 等没有被生成器解释成真实换行或其他字符。
+2. 页面含 `.layout`，桌面端左侧 `.sidebar` 目录 sticky 显示，右侧 `<main>` 使用暖白背景 `#FEFCF8`、细微圆角和阴影。
+3. `<main>` 默认最大宽度约 `980px`，与左侧目录之间保留约 `64px` 桌面端间距。
+4. 左侧目录自身可滚动但隐藏滚动条；移动端使用 `#toc-toggle` 展开/收起 `.sidebar`。
+5. 目录链接使用 `.sidebar-nav a`，滚动时当前章节添加 `.active` 类。
+6. 每个大主题使用 `<section id=”...”>`，目录锚点能对应。
+7. 中英文长句使用 `.pair` 紧邻配对，短标题使用 `.zh-inline`。
+8. 定义、定理、例子、警告使用 `.box` + `.box-head` + `.box-body` 结构，证明使用 `.proof`。
+9. 页面只有一个 `DOCTYPE`、一个 `<html>` 根节点。
+10. HTML5 语义标签完整闭合。
+11. 打印样式隐藏目录、目录按钮并去除正文阴影和背景色。
+12. 支持 `prefers-reduced-motion`，关闭平滑滚动和动画。
+13. 高亮器三份标准资产已完整内联，并通过”高亮验收”。
+14. 源码 `<pre><code>` 通过转义验收：字符串字面量中的 `\n`、`\t`、`\\` 等没有被生成器解释成真实换行或其他字符。
 
 ## 10. 用户覆盖规则
 
